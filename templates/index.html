@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Two Water Jug Problem</title>
+
+        <style>
+            *{
+                margin: 0px;
+                padding: 0px;
+            }
+            .container{
+                height: 100vh;
+                width: 100vw;
+                background-color: whitesmoke;
+            }
+            .jugs{
+                position: relative;
+                top: 10vh;
+            }
+            .jug1{
+                margin-left: 10vw;
+                height: 40vh;
+                width: 20vw;
+                color: white;
+                font-size: 80px;
+                font-weight: bold;
+                text-align: center;
+                background-image: linear-gradient(0deg,blue 0%,black 0%,gray 100%);
+            }
+            .jug2{
+                margin-left: 2vw;
+                height: 40vh;
+                width: 20vw;
+                color: white;
+                font-size: 80px;
+                text-align: center;
+                font-weight: bold;
+                background-image: linear-gradient(0deg,blue 0%,black 0%,gray 100%);
+            }
+            input,button{
+                position: relative;
+                top: 20px;
+                left: 40px;
+                padding: 10px;
+                height: 15px;
+                border-radius: 5px;
+            }
+            button{
+                height: 40px;
+                width: 100px;
+                background-color: green;
+                color: yellow;
+                text-align: center;
+                padding: 0px;
+            }
+        </style>
+
+        <script>
+
+            function delay_display(a,b){
+                j1 = (a/cap1)*100;
+                j2 = (b/cap2)*100;
+                document.getElementById('jug1').innerHTML = a;
+                document.getElementById('jug2').innerHTML = b;
+                document.getElementById('jug1').style.backgroundImage = `linear-gradient(0deg,blue ${j1}%,black ${j1+0.1}%,gray 100%)`;
+                document.getElementById('jug2').style.backgroundImage = `linear-gradient(0deg,blue ${j2}%,black ${j2+0.1}%,gray 100%)`;
+                console.log("hello ",j1,j2);
+            }
+
+            function lazy_call(a,b,i){
+                setTimeout(delay_display,1000*(i+2),a,b);
+            }
+
+            function play_func(){
+                cap1 = document.getElementById('cap1').value;
+                cap2 = document.getElementById('cap2').value;
+                i1 = document.getElementById('i1').value;
+                i2 = document.getElementById('i2').value;
+                f1 = document.getElementById('f1').value;
+                f2 = document.getElementById('f2').value;
+                data = [cap1,cap2,i1,i2,f1,f2]
+                fetch('/play',{
+                    method:'POST',
+                    headers:{'Content-Type':'application/json'},
+                    body:JSON.stringify(data)
+                }).then(response => response.json())
+                .then(data => {
+                    if(data!='NOT POSSIBLE'){
+                        document.getElementById('error').innerHTML='';
+                    for(let i=0;i<data.length;i++){
+                        lazy_call(data[i][0],data[i][1],i);
+                    }
+                    }
+                    else{
+                        document.getElementById('error').innerHTML = data;
+                        document.getElementById('jug1').innerHTML = '';
+                        document.getElementById('jug2').innerHTML = '';
+                        document.getElementById('jug1').style.backgroundImage = `linear-gradient(0deg,blue 0%,black 0%,gray 100%)`;
+                        document.getElementById('jug2').style.backgroundImage = `linear-gradient(0deg,blue 0%,black 0%,gray 100%)`;
+                    }
+                })
+            }
+        </script>
+
+    </head>
+
+    <body>
+        <div class="container">
+        <h1 style="text-align: center;color: blue;text-decoration: underline;">TWO WATER JUG PROBLEM</h1>
+        <div id="output"></div>
+        <input id="cap1" type="text" placeholder="Jug 1 Capacity">
+        <input id="cap2" type="text" placeholder="Jug 2 Capacity">
+        <br><br>
+        <input id="i1" type="text" placeholder="Jug 1 Initial State">
+        <input id="i2" type="text" placeholder="Jug 2 Initial State">
+        <br><br>
+        <input id="f1" type="text" placeholder="Jug 1 Final State">
+        <input id="f2" type="text" placeholder="Jug 2 Final State">
+        <br><br>
+        <button  onclick="play_func()" >PLAY</button>
+        <br><br>
+        <div id="error" style="color:red;margin-left: 20px;font-weight: bold;font-size: 60px;"></div>
+        <div class="jugs" style="display:flex;">
+        <div id="jug1" class="jug1"></div>
+        <div id="jug2" class="jug2"></div>
+        </div>
+        </div>
+    </body>
+</html>
